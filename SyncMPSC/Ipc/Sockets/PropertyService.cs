@@ -44,8 +44,8 @@ public class PropertyService : IPropertyService
     }
 
     /// <summary>
-    /// Lädt Properties aus einer Textdatei im Format key=value.
-    /// Unterstützt Kommentare mit # am Zeilenanfang.
+    /// Loads Properties in the format key=value from a text file.
+    /// Comments starting with '#' and empty lines are ignored.
     /// </summary>
     public static void LoadFromFile(string filePath)
     {
@@ -56,11 +56,11 @@ public class PropertyService : IPropertyService
         {
             var trimmedLine = line.Trim();
 
-            // Überspringe leere Zeilen und Kommentare
+            // skip comments
             if (string.IsNullOrWhiteSpace(trimmedLine) || trimmedLine.StartsWith('#'))
                 continue;
 
-            // Suche nach dem ersten '=' oder ':' (Standard für Java Properties)
+            // search for key-value separator
             int separatorIndex = trimmedLine.IndexOfAny(anyOf);
             if (separatorIndex > 0)
             {
@@ -72,8 +72,8 @@ public class PropertyService : IPropertyService
     }
 
     /// <summary>
-    /// Simuliert Tabellenstrukturen aus der Konfiguration.
-    /// Beispiel: messaging.queue.0.id=ABC, messaging.queue.0.port=5555
+    /// Simulates a table of properties based on a common prefix and indexed keys.
+    /// Example: messaging.queue.0.id=ABC, messaging.queue.0.port=5555
     /// </summary>
     public static List<Dictionary<string, string>> GetPropertyTable(string prefix)
     {
@@ -82,11 +82,11 @@ public class PropertyService : IPropertyService
 
         foreach (var kvp in _properties.Where(p => p.Key.StartsWith(prefix)))
         {
-            // Erwartetes Format: prefix.index.suffix (z.B. messaging.queue.0.id)
+            // Expected format: prefix.index.suffix (e.g., messaging.queue.0.id)
             var parts = kvp.Key.Split('.');
             if (parts.Length > prefixPartsCount)
             {
-                // Der Index ist der Teil direkt nach dem Prefix
+                // The index is the part right after the prefix
                 string index = parts[prefixPartsCount];
                 string suffix = parts.Last();
 
