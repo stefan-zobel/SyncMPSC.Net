@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.2" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+
+
+  <!-- Reference to the the managed dependency for the compiler -->
+  <ItemGroup>
+    <Reference Include="librocks.NET">
+      <!-- No HintPath! -->
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Force MSBuild to use the correct search path based on the current config -->
+  <PropertyGroup>
+    <AssemblySearchPaths>
+      lib\$(Configuration)\;
+      $(AssemblySearchPaths)
+    </AssemblySearchPaths>
+    <AssemblyName>$(MSBuildProjectName).NET</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Copy all DLLs (managed & native) from that folder flat to the build output -->
+    <None Include="lib\$(Configuration)\*.dll">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
