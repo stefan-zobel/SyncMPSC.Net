@@ -1,5 +1,8 @@
-﻿//using Microsoft.Extensions.Logging;
-
+﻿/*
+ * Copyright (c) 2026           Stefan Zobel.
+ *
+ * http://www.opensource.org/licenses/mit-license.php
+ */
 using SyncMPSC;
 using SyncMPSC.Ipc.Sockets;
 
@@ -13,12 +16,12 @@ public class MessagingLibShowcaseImpl
     private string _ipOrHostname = "localhost";
     private static readonly byte[] _writeBuf = new byte[5];
 
-    private static readonly CallStats MainQueueStats = new("ABCDEF04");
-    private static readonly CallStats SecondaryQueueStats = new("ABCDEF44");
+    private static readonly CallStats MainQueueStats = new("ABCDEF");
+    private static readonly CallStats SecondaryQueueStats = new("GHIJKL");
 
     private const int SERVER_WRITE_PORT = 33332;
-    private const int SERVER_READ_PORT_QUEUE_04 = 33333;
-    private const int SERVER_READ_PORT_QUEUE_44 = 44444;
+    private const int SERVER_READ_PORT_QUEUE_MAIN = 33333;
+    private const int SERVER_READ_PORT_QUEUE_SECONDARY = 44444;
 
     public static void Main(string[] args)
     {
@@ -68,28 +71,28 @@ public class MessagingLibShowcaseImpl
             SecondaryQueueStats.Update(value);
         });
 
-        string id44 = "ABCDEF44";
+        string idSecondary = "GHIJKL";
 
         IQueueSender? sender = _clientService.GetDefaultQueueSender();
         if (sender == null) throw new InvalidOperationException("Sender not correctly configured!");
 
         // Receiver Setup 1
-        IQueueReceiver rc04 = _clientService.CreateDefaultQueueReceiver(mainHandler);
-        IQueueReceiver rc44 = _clientService.CreateQueueReceiver(id44, _ipOrHostname, SERVER_READ_PORT_QUEUE_44, secondaryHandler);
+        IQueueReceiver rcMain = _clientService.CreateDefaultQueueReceiver(mainHandler);
+        IQueueReceiver rcSec = _clientService.CreateQueueReceiver(idSecondary, _ipOrHostname, SERVER_READ_PORT_QUEUE_SECONDARY, secondaryHandler);
 
-        rc04.Start();
-        rc44.Start();
+        rcMain.Start();
+        rcSec.Start();
 
-        StopSenderAndReceiver(rc04, rc44, 6, sender);
+        StopSenderAndReceiver(rcMain, rcSec, 6, sender);
 
         // Receiver Setup 2
-        rc04 = _clientService.CreateDefaultQueueReceiver(mainHandler);
-        rc44 = _clientService.CreateQueueReceiver(id44, _ipOrHostname, SERVER_READ_PORT_QUEUE_44, secondaryHandler);
+        rcMain = _clientService.CreateDefaultQueueReceiver(mainHandler);
+        rcSec = _clientService.CreateQueueReceiver(idSecondary, _ipOrHostname, SERVER_READ_PORT_QUEUE_SECONDARY, secondaryHandler);
 
-        rc04.Start();
-        rc44.Start();
+        rcMain.Start();
+        rcSec.Start();
 
-        StopSenderAndReceiver(rc04, rc44, 8, sender);
+        StopSenderAndReceiver(rcMain, rcSec, 8, sender);
 
         Thread.Sleep(2_000);
 
@@ -98,9 +101,7 @@ public class MessagingLibShowcaseImpl
         MainQueueStats.Reset();
         SecondaryQueueStats.Reset();
 
-        // Statistics
-        // Hinweis: Da DoubleStatistics in Ihrer Anweisung übersprungen wurde, 
-        // ist dieser Teil Platzhalter für Ihre .NET Implementierung.
+        // Statistics (TODO)
         Console.WriteLine("Send stats placeholder - Average: 0.0 ms");
 
         // No shutdown, that would stop the threads
@@ -116,8 +117,8 @@ public class MessagingLibShowcaseImpl
         bool ok = true;
         for (int i = 1; i <= 8; i++)
         {
-            // 10_000 Nachrichten senden
-            for (int j = 1; j <= 10000 && ok; j++)
+            // send 10_000 messages
+            for (int j = 1; j <= 10_000 && ok; j++)
             {
                 PutIntL(MainQueueStats.StartVal, _writeBuf);
                 ok = sender.SendMessage(_writeBuf);
@@ -142,7 +143,7 @@ public class MessagingLibShowcaseImpl
         if (rc1.IsRunning) Console.WriteLine($"{rc1.Id}.stop: {rc1.Stop()}");
         if (rc2 != null && rc2.IsRunning) Console.WriteLine($"{rc2.Id}.stop: {rc2.Stop()}");
 
-        sender.Dispose(); // In .NET ist Dispose() das Äquivalent zu close()
+        sender.Dispose();
         long duration = Environment.TickCount64 - start;
         Console.WriteLine($"Done (shutdown took: {duration} ms)");
     }
