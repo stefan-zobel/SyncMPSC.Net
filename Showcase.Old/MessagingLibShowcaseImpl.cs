@@ -73,8 +73,7 @@ public class MessagingLibShowcaseImpl
 
         string idSecondary = "GHIJKL";
 
-        IQueueSender? sender = _clientService.GetDefaultQueueSender();
-        if (sender == null) throw new InvalidOperationException("Sender not correctly configured!");
+        IQueueSender? sender = _clientService.GetDefaultQueueSender() ?? throw new InvalidOperationException("Sender not correctly configured!");
 
         // Receiver Setup 1
         IQueueReceiver rcMain = _clientService.CreateDefaultQueueReceiver(mainHandler);
