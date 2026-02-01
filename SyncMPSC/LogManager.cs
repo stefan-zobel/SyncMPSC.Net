@@ -7,21 +7,21 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 
-namespace SyncMPSC.Ipc.Sockets;
+namespace SyncMPSC;
 
-internal static class LogManager
+public static class LogManager
 {
     private const string javaStyleLogTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{ThreadId}] {Level:u4} {SourceContext} - {Message:lj}{NewLine}{Exception}";
 
     private static ILoggerFactory? _factory;
 
-    internal static ILogger<T> GetLogger<T>()
+    public static ILogger<T> GetLogger<T>()
         => _factory?.CreateLogger<T>() ?? throw new InvalidOperationException("LogManager is not initialized!");
 
     /// <summary>
     /// Initialize the global logging system.
     /// </summary>
-    internal static void Initialize(string logPath, string minLevel, string? logTemplate = null)
+    public static void Initialize(string logPath, string minLevel, string? logTemplate = null)
     {
         // Serilog Logger-Konfiguration
         var serilogLogger = new LoggerConfiguration()
