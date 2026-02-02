@@ -13,9 +13,9 @@ namespace SyncMPSC.Ipc.Sockets;
 /// <summary>
 /// Consumes messages from a persistent Queue and sends them out to a consumer via TCP.
 /// </summary>
-public sealed class QueueTransmitterImpl : IQueueTransmitter
+public sealed class QueueTransmitter : IQueueTransmitter
 {
-    private static readonly ILogger<QueueTransmitterImpl> LOGGER = LogManager.GetLogger<QueueTransmitterImpl>();
+    private static readonly ILogger<QueueTransmitter> LOGGER = LogManager.GetLogger<QueueTransmitter>();
 
     private const int DEFAULT_BACKLOG = 50;
     private const int DEFAULT_ACCEPT_TIMEOUT_MILLIS = 500;
@@ -30,7 +30,7 @@ public sealed class QueueTransmitterImpl : IQueueTransmitter
     private Thread? _asyncStarter;
     private TcpClient? _client;
 
-    public QueueTransmitterImpl(string id, int port, string? ipAddressString, Queue kueue)
+    public QueueTransmitter(string id, int port, string? ipAddressString, Queue kueue)
     {
         _port = port;
         _readQueue = kueue;
@@ -69,7 +69,7 @@ public sealed class QueueTransmitterImpl : IQueueTransmitter
             }
         })
         {
-            Name = $"{nameof(QueueTransmitterImpl)}-{_port}-Thread-{GetHashCode()}",
+            Name = $"{nameof(QueueTransmitter)}-{_port}-Thread-{GetHashCode()}",
             IsBackground = true
         };
         _asyncStarter.Start();

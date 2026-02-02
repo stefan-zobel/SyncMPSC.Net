@@ -8,10 +8,10 @@ using SyncMPSC.Ipc.Sockets;
 
 namespace Showcase.Old;
 
-public class MessagingLibShowcaseImpl
+public class MessagingLibShowcase
 {
-    private static MessagingLibClientServiceImpl _clientService = null!;
-    private static MessagingLibServerServiceImpl _serverService = null!;
+    private static MessagingLibClientService _clientService = null!;
+    private static MessagingLibServerService _serverService = null!;
 
     private string _ipOrHostname = "localhost";
     private static readonly byte[] _writeBuf = new byte[5];
@@ -33,10 +33,10 @@ public class MessagingLibShowcaseImpl
 
         LogManager.Initialize(logPath, minLevel, logTemplate);
 
-        _serverService = new MessagingLibServerServiceImpl();
-        _clientService = new MessagingLibClientServiceImpl();
+        _serverService = new MessagingLibServerService();
+        _clientService = new MessagingLibClientService();
 
-        var showcase = new MessagingLibShowcaseImpl();
+        var showcase = new MessagingLibShowcase();
         showcase.Init();
         for (int i = 0; i < 7; i++)
         {

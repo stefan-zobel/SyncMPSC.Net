@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace SyncMPSC.Ipc.Sockets;
 
-public sealed class MessagingLibClientServiceImpl /*: IMessagingLibClientService */
+public sealed class MessagingLibClientService /*: IMessagingLibClientService */
 {
-    private static readonly ILogger<MessagingLibClientServiceImpl> LOGGER = LogManager.GetLogger<MessagingLibClientServiceImpl>();
+    private static readonly ILogger<MessagingLibClientService> LOGGER = LogManager.GetLogger<MessagingLibClientService>();
 
     private const string DEFAULT_HOST = "localhost";
 
@@ -27,7 +27,7 @@ public sealed class MessagingLibClientServiceImpl /*: IMessagingLibClientService
         public string ServerHost { get; init; } = ServerHost.Trim().ToLowerInvariant();
     }
 
-    public string Name => nameof(MessagingLibClientServiceImpl); //nameof(IMessagingLibClientService);
+    public string Name => nameof(MessagingLibClientService); //nameof(IMessagingLibClientService);
 
     public void Init()
     {

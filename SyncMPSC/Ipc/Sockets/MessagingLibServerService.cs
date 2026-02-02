@@ -9,9 +9,9 @@ using System.Collections.Concurrent;
 
 namespace SyncMPSC.Ipc.Sockets;
 
-public sealed class MessagingLibServerServiceImpl /*: IMessagingLibServerService */
+public sealed class MessagingLibServerService /*: IMessagingLibServerService */
 {
-    private static readonly ILogger<MessagingLibServerServiceImpl> LOGGER = LogManager.GetLogger<MessagingLibServerServiceImpl>();
+    private static readonly ILogger<MessagingLibServerService> LOGGER = LogManager.GetLogger<MessagingLibServerService>();
 
     private static string _rocksDBPath = "./rocksdb_database";
     private string _version = "?.?.?";
@@ -37,7 +37,7 @@ public sealed class MessagingLibServerServiceImpl /*: IMessagingLibServerService
         public ServerEndpoint? Sep { get; } = sep;
     }
 
-    public string Name => nameof(MessagingLibServerServiceImpl); // nameof(IMessagingLibServerService);
+    public string Name => nameof(MessagingLibServerService); // nameof(IMessagingLibServerService);
 
     public QueueManager? GetQueueManager() => _km;
 
@@ -146,7 +146,7 @@ public sealed class MessagingLibServerServiceImpl /*: IMessagingLibServerService
 
         foreach (var qCfg in _queueConfigs.Values)
         {
-            var transmitter = new QueueTransmitterImpl(qCfg.Id, qCfg.ReadPort, qCfg.ListenerIP, _km.Get(qCfg.Id));
+            var transmitter = new QueueTransmitter(qCfg.Id, qCfg.ReadPort, qCfg.ListenerIP, _km.Get(qCfg.Id));
             var sep = new ServerEndpoint(qCfg.Id, qCfg.WritePort);
 
             Dictionary<string, IMessagePassthrough>? passthroughsForAdditionalQueues = null;
