@@ -42,6 +42,8 @@ public class MessagingLibShowcase
         {
             showcase.Execute();
         }
+        _clientService.Shutdown();
+        _serverService.Shutdown();
     }
 
     public void Init()
@@ -116,8 +118,8 @@ public class MessagingLibShowcase
         bool ok = true;
         for (int i = 1; i <= 8; i++)
         {
-            // send 10_000 messages
-            for (int j = 1; j <= 10_000 && ok; j++)
+            // send 70_000 messages
+            for (int j = 1; j <= 70_000 && ok; j++)
             {
                 PutIntL(MainQueueStats.StartVal, _writeBuf);
                 ok = sender.SendMessage(_writeBuf);

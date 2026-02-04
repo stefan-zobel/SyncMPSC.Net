@@ -71,6 +71,7 @@ public sealed class MessagingLibServerService /*: IMessagingLibServerService */
     public void Shutdown()
     {
         StopQueueServerThreads();
+        _km?.CompactAll();
         _km?.Dispose();
         _queueConfigs.Clear();
     }
